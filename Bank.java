@@ -45,6 +45,9 @@ public class Bank {
         //
         // ห้ามแก้ด้วยการเอาล็อกใบใดใบหนึ่งออก — ยอดรวมจะเพี้ยน
         // ---------------------------------------------------------------
+
+        if (from.id() < to.id()) {
+        // กรณี from มี id น้อยกว่า -> ล็อก from ก่อน แล้วค่อย to
         synchronized (from) {
             synchronized (to) {
                 if (!from.withdraw(amount)) {
@@ -54,5 +57,18 @@ public class Bank {
                 return true;
             }
         }
+    } else {
+        // กรณี to มี id น้อยกว่า -> ล็อก to ก่อน แล้วค่อย from
+        synchronized (to) {
+            synchronized (from) {
+                if (!from.withdraw(amount)) {
+                    return false;
+                }
+                to.deposit(amount);
+                return true;
+            }
+        }
     }
+}
+
 }
